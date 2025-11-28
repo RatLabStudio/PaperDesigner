@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Display Settings | Rat Lab Studio</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      canvas {
+        position: relative;
+        width: 75%;
+        transform: none;
+        top: none;
+        left: none;
+        margin: auto;
+        transform: translateX(-64%);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ribbon">
+      <button class="windowButton" style="background-color: var(--red)"></button>
+      <button class="windowButton" style="background-color: var(--yellow)"></button>
+      <button class="windowButton" style="background-color: var(--bluegreen)"></button>
+    </div>
+    <div id="sidebar">
+      <br /><br /><br />
+      <h2 style="margin-bottom: 10px"><a href="https://ratlabstudio.com" style="color: rgb(108, 224, 228)">Rat Lab Studio</a></h2>
+      <br />
+      <h2 style="font-weight: normal">Display Setup</h2>
+    </div>
+    <div id="documentBody">
+      <div class="page" id="networkPage" style="visibility: hidden">
+        <br /><br />
+        <h1>Rat Lab Display Setup</h1>
+        <br />
+        <p>Input your home network credentials below to allow your device to connect to the internet.</p>
+        <br /><br /><br />
+        <h3>Network Name</h3>
+        <br />
+        <select id="networkOptions" placeholder="SSID"></select>
+        <br /><br /><br />
+        <h3>Network Password</h3>
+        <br />
+        <input id="password" placeholder="Password" type="password" />
+        <br /><br /><br />
+        <button onclick="connect()">Connect</button>
+      </div>
+
+      <div class="page" id="screensPage" style="visibility: visible">
+        <br />
+        <h1>Screen Setup</h1>
+        <br />
+        <p>Choose a display setting to use:</p>
+        <br />
+        <div id="displayContainer"></div>
+      </div>
+    </div>
+
+    <script>
+      networkOptions = "%networks%".split(",");
+      for (let i = 0; i < networkOptions.length; i++) {
+        document.getElementById("networkOptions").innerHTML += `
+                            <option value='${networkOptions[i]}'>${networkOptions[i]}</option>
+                        `;
+      }
+
+      document.getElementById("networkOptions").addEventListener("change", (e) => {
+        fetch(`/set1?value=${e.target.value}`)
+          .then((r) => r.text())
+          .then((t) => console.log(t));
+      });
+
+      function connect() {
+        let SSID = document.getElementById("networkOptions").value;
+        let password = document.getElementById("password").value;
+        fetch(`/set2?value=${password}`)
+          .then((r) => r.text())
+          .then((t) => console.log(t))
+          .then(() => {
+            document.getElementById("networkPage").style.visibility = "hidden";
+            document.getElementById("screensPage").style.visibility = "visible";
+          });
+      }
+      document.connect = connect;
+
+      // ---------- DISPLAY PAGE ----------
+      const displayContainer = document.getElementById("displayContainer");
+      let displays = [];
+
+      class Display {
+        constructor(id, name) {
+          this.id = id;
+          this.name = name;
+          displayContainer.innerHTML += `
+          <div class="displayTile" id="display${this.id}">
+            <canvas id="canvas${this.id}" width="200" height="200"></canvas>
+            <br>
+            <p>${this.name}</p>
+          </div>`;
+          this.canvas = document.getElementById(`canvas${this.id}`);
+          this.ctx = this.canvas.getContext("2d");
+          this.ctx.imageSmoothingEnabled = false;
+          this.ctx.webkitImageSmoothingEnabled = false;
+          this.ctx.letterSpacing = "1.75px";
+
+          this.cursor = {
+            x: 0,
+            y: 0,
+          };
+        }
+
+        drawRect(x, y, width, height, color) {
+          this.ctx.fillStyle = color;
+          this.ctx.strokeRect(x, y, width, height);
+        }
+
+        fillRect(x, y, width, height, color) {
+          this.ctx.fillStyle = color;
+          this.ctx.fillRect(x, y, width, height);
+        }
+
+        fillRoundRect(x, y, width, height, radius, color) {
+          this.ctx.fillStyle = color;
+          this.ctx.beginPath();
+          this.ctx.roundRect(x, y, width, height, radius);
+          this.ctx.fill();
+        }
+
+        drawCircle(x, y, radius, color) {
+          this.ctx.fillStyle = color;
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, radius, 0, 360, false);
+          this.ctx.stroke();
+        }
+
+        fillCircle(x, y, radius, color) {
+          this.ctx.fillStyle = color;
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, radius, 0, 360, false);
+          this.ctx.fill();
+        }
+
+        setTextColor(color) {
+          this.ctx.fillStyle = color;
+        }
+
+        setFont(font) {
+          this.ctx.font = font;
+        }
+
+        setCursor(x, y) {
+          this.cursor.x = x;
+          this.cursor.y = y;
+        }
+
+        print(text) {
+          this.ctx.fillText(text, this.cursor.x, this.cursor.y);
+        }
+
+        draw() {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          // Draw Code Here
+        }
+
+        update() {
+          //this.draw();
+        }
+
+        parseInstruction(instruction) {
+          console.log(instruction);
+          let keys = Object.keys(instruction);
+
+          if (keys[0] == "text") {
+            this.setTextColor(instruction.color);
+            this.setCursor(instruction.position.x, instruction.position.y);
+            this.print(instruction.text);
+          }
+        }
+      }
+
+      class RTC {
+        constructor() {
+          this.date = new Date();
+        }
+
+        getWeekday() {
+          return this.date.getDay();
+        }
+
+        getHour() {
+          return this.date.getHours();
+        }
+
+        getMinute() {
+          return this.date.getMinutes();
+        }
+
+        getMonth() {
+          return this.date.getMonth();
+        }
+
+        getDay() {
+          return this.date.getDate();
+        }
+
+        getYear() {
+          return this.date.getFullYear();
+        }
+      }
+
+      let rtc = new RTC();
+
+      let tt;
+      let voltageSegments = 4;
+      let dateString;
+      let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      let tmp = 76;
+      let hum2 = 45;
+
+      /*DejaVu_Sans_Condensed.load()
+        .then(function (font) {
+          DSEG7.load()
+            .then(function (font) {
+              fontLoaded = true;
+              update();
+            })
+            .catch(function (error) {
+              console.error("Error loading font:", error);
+            });
+        })
+        .catch(function (error) {
+          console.error("Error loading font:", error);
+        });*/
+
+      function update() {
+        rtc.date = new Date();
+
+        h = rtc.getHour();
+        m = rtc.getMinute();
+        if (h < 10) hourStr = "0" + String(h);
+        else hourStr = String(h);
+        if (m < 10) minStr = "0" + String(m);
+        else minStr = String(m);
+        let hour12, ampm;
+        if (h == 0) {
+          hour12 = 12;
+          ampm = "AM";
+        } else if (h == 12) {
+          hour12 = 12;
+          ampm = "PM";
+        } else if (h > 12) {
+          hour12 = h - 12;
+          ampm = "PM";
+        } else {
+          hour12 = h;
+          ampm = "AM";
+        }
+        tt = String(hour12) + ":" + minStr;
+
+        dateString = rtc.getMonth() + 1 + "/" + rtc.getDay() + "/" + (rtc.getYear() - 2000);
+
+        for (let i = 0; i < displays.length; i++) displays[i].update();
+      }
+
+      setInterval(function () {
+        update();
+      }, 1000);
+
+      let pixelation = false;
+      function togglePixelation() {
+        if (!pixelation) {
+          canvas.style.imageRendering = "pixelated";
+          pixelation = true;
+        } else {
+          canvas.style.imageRendering = "auto";
+          pixelation = false;
+        }
+      }
+      document.togglePixelation = togglePixelation;
+
+      fetch("programs.json")
+        .then((response) => response.json())
+        .then((data) => {
+          let keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            displays.push(new Display(i, keys[i]));
+            let iKeys = Object.keys(data[keys[i]].instructions);
+            for (let j = 0; j < iKeys.length; j++) {
+              displays[i].parseInstruction(data[keys[i]].instructions[iKeys[j]]);
+            }
+          }
+        })
+        .catch((error) => console.error("Error loading JSON:", error));
+    </script>
+    <script src="ui.js"></script>
+  </body>
+</html>

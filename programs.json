@@ -1,0 +1,14 @@
+{
+  "clock": {
+    "instructions": {
+      "print": {
+        "text": "%time%",
+        "color": "%black%",
+        "position": {
+          "x": 30,
+          "y": 30
+        }
+      }
+    }
+  }
+}

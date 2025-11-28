@@ -40,6 +40,13 @@ class Display {
     ctx.fill();
   }
 
+  drawCircle(x, y, radius, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 360, false);
+    ctx.stroke();
+  }
+
   fillCircle(x, y, radius, color) {
     ctx.fillStyle = color;
     ctx.beginPath();
@@ -101,7 +108,7 @@ let display = new Display();
 let tt;
 let voltageSegments = 4;
 let dateString;
-let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 let tmp = 76;
 let hum2 = 45;
 
@@ -123,66 +130,7 @@ DejaVu_Sans_Condensed.load()
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  //LINE BELOW TIME
-  display.fillRect(60, 137, 124, 5, GxEPD_BLACK);
-  //display.fillRect(120, 82, 60, 2, GxEPD_BLACK);
-  display.fillRect(10, 42, 3, 129, GxEPD_BLACK);
-
-  //draw time
-  display.setTextColor(GxEPD_BLACK);
-  //display.setFont(&DSEG7_Classic_bold_36);
-  display.setFont("bold 36px DSEG7");
-  display.setCursor(18, 130);
-  display.print(tt);
-
-  // Battery
-  display.drawRect(150, 8, 40, 16, GxEPD_BLACK);
-  display.drawRect(151, 9, 38, 14, GxEPD_BLACK);
-  display.fillRect(190, 12, 3, 7, GxEPD_BLACK);
-
-  for (let i = 0; i < voltageSegments; i++) display.fillRect(154 + i * 7, 12, 4, 8, GxEPD_BLACK);
-
-  // Date
-  display.fillRoundRect(20, 48, 95, 35, 5, GxEPD_BLACK);
-
-  //display.setFont(&DejaVu_Sans_Condensed_bold_15);
-  display.setFont("bold 15px DejaVu_Sans_Condensed");
-  display.setTextColor(GxEPD_WHITE);
-  /*display.setCursor(27, 57);
-    display.print("Date");*/
-
-  //display.setFont(&DejaVu_Sans_Condensed_bold_18);
-  display.setFont("bold 18px DejaVu_Sans_Condensed");
-  display.setCursor(25, 73);
-  display.print(dateString);
-
-  // Weekday
-  display.fillRoundRect(137, 63, 45, 22, 4, GxEPD_BLACK);
-
-  display.setTextColor(GxEPD_WHITE);
-  display.setCursor(142, 80);
-  display.print(days[rtc.getWeekday()]);
-
-  //SENSR READINGS temperature symbol
-  display.fillRoundRect(35, 143, 15, 40, 8, GxEPD_BLACK);
-  display.fillCircle(42, 173, 10, GxEPD_BLACK);
-  display.fillRoundRect(37, 145, 11, 36, 8, GxEPD_WHITE);
-  display.fillCircle(42, 173, 8, GxEPD_WHITE);
-  display.fillRoundRect(40, 153, 5, 25, 2, GxEPD_BLACK);
-  display.fillCircle(42, 173, 5, GxEPD_BLACK);
-
-  //SENSR READINGS humidity symbol
-  for (let i = 0; i < 6; i++) display.fillCircle(122, 170 - i * 3, 6 - i, GxEPD_BLACK);
-
-  display.setTextColor(GxEPD_BLACK);
-  display.setCursor(60, 161);
-  //display.print("Temp");
-  display.setCursor(60, 177);
-  display.print(tmp);
-  display.setCursor(135, 161);
-  //display.print("Hum");
-  display.setCursor(135, 177);
-  display.print(hum2);
+  page5();
 }
 
 function update() {
@@ -231,19 +179,232 @@ function togglePixelation() {
 }
 document.togglePixelation = togglePixelation;
 
-function updateUI() {
-  if (window.innerWidth < 800) {
-    document.getElementById("sidebar").style.visibility = "hidden";
-    document.getElementById("documentBody").style.width = "100%";
-    canvas.style.width = "80%";
-  } else {
-    document.getElementById("sidebar").style.visibility = "visible";
-    document.getElementById("documentBody").style.width = "80%";
-    canvas.style.width = "50vh";
-  }
+function page1() {
+  //LINE BELOW TIME
+  display.fillRect(60, 137, 124, 5, GxEPD_BLACK);
+  display.fillRect(10, 42, 3, 129, GxEPD_BLACK);
+
+  // Time
+  display.setTextColor(GxEPD_BLACK);
+  //display.setFont(&DSEG7_Classic_bold_36);
+  display.setFont("bold 36px DSEG7");
+  display.setCursor(18, 130);
+  display.print(tt);
+
+  // Battery
+  display.drawRect(150, 8, 40, 16, GxEPD_BLACK);
+  display.drawRect(151, 9, 38, 14, GxEPD_BLACK);
+  display.fillRect(190, 12, 3, 7, GxEPD_BLACK);
+
+  for (let i = 0; i < voltageSegments; i++) display.fillRect(154 + i * 7, 12, 4, 8, GxEPD_BLACK);
+
+  // Date
+  display.fillRoundRect(20, 48, 95, 35, 5, GxEPD_BLACK);
+
+  //display.setFont(&DejaVu_Sans_Condensed_bold_15);
+  display.setFont("bold 15px DejaVu_Sans_Condensed");
+  display.setFont("bold 18px DejaVu_Sans_Condensed");
+  display.setCursor(25, 73);
+  display.print(dateString);
+
+  // Weekday
+  display.fillRoundRect(137, 63, 45, 22, 4, GxEPD_BLACK);
+
+  display.setTextColor(GxEPD_WHITE);
+  display.setCursor(142, 80);
+  display.print(days[rtc.getWeekday()]);
+
+  //SENSR READINGS temperature symbol
+  display.fillRoundRect(35, 143, 15, 40, 8, GxEPD_BLACK);
+  display.fillCircle(42, 173, 10, GxEPD_BLACK);
+  display.fillRoundRect(37, 145, 11, 36, 8, GxEPD_WHITE);
+  display.fillCircle(42, 173, 8, GxEPD_WHITE);
+  display.fillRoundRect(40, 153, 5, 25, 2, GxEPD_BLACK);
+  display.fillCircle(42, 173, 5, GxEPD_BLACK);
+
+  //SENSR READINGS humidity symbol
+  for (let i = 0; i < 6; i++) display.fillCircle(122, 170 - i * 3, 6 - i, GxEPD_BLACK);
+
+  display.setTextColor(GxEPD_BLACK);
+  display.setCursor(60, 161);
+  display.setCursor(60, 177);
+  display.print(tmp);
+  display.setCursor(135, 161);
+  display.setCursor(135, 177);
+  display.print(hum2);
 }
 
-window.addEventListener("resize", (e) => {
-  updateUI();
-});
-updateUI();
+function page2() {
+  // Time
+  display.setFont("bold 12px DejaVu_Sans_Condensed");
+  display.setCursor(160, 14);
+  display.print(tt);
+
+  // Ribbon
+  display.setCursor(6, 14);
+  display.print("Rat Lab Studio");
+  display.fillRect(0, 20, 200, 1, GxEPD_BLACK);
+
+  // Desktop File
+  display.drawRect(5, 28, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 25, 12, 3, GxEPD_BLACK);
+
+  // Window
+  display.fillRect(12, 35, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 33, 180, 155, GxEPD_WHITE);
+  display.drawRect(10, 33, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 48, 180, 1, GxEPD_BLACK);
+  for (let i = 0; i < 3; i++) display.drawCircle(20 + 13 * i, 41, 4, GxEPD_BLACK);
+
+  // Content
+  display.setCursor(30, 80);
+  display.print("Today is " + String(dateString) + ",");
+  display.setCursor(30, 100);
+  display.print("a " + String(days[rtc.getWeekday()]) + ".");
+
+  display.fillRoundRect(30, 112, 6, 20, 4, GxEPD_BLACK);
+  display.fillCircle(33, 127, 5, GxEPD_BLACK);
+  display.fillRoundRect(31, 113, 4, 18, 4, GxEPD_WHITE);
+  display.fillCircle(33, 127, 4, GxEPD_WHITE);
+  display.fillRoundRect(32, 117, 2, 13, 1, GxEPD_BLACK);
+  display.fillCircle(33, 127, 3, GxEPD_BLACK);
+
+  display.setCursor(45, 128);
+  display.print("It's " + String(tmp) + " degrees.");
+}
+
+function page3() {
+  // Time
+  display.setFont("bold 12px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
+  display.setCursor(155, 14);
+  display.print(tt);
+
+  // Ribbon
+  display.setCursor(6, 14);
+  display.print("Rat Lab Studio");
+  display.fillRect(0, 20, 200, 1, GxEPD_BLACK);
+
+  // Desktop File
+  display.drawRect(5, 28, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 25, 12, 3, GxEPD_BLACK);
+
+  // Desktop File 2
+  display.drawRect(5, 59, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 56, 12, 3, GxEPD_BLACK);
+
+  // Desktop File 3
+  display.drawRect(5, 90, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 87, 12, 3, GxEPD_BLACK);
+
+  // Window
+  display.fillRect(12, 35, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 33, 180, 155, GxEPD_WHITE);
+  display.drawRect(10, 33, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 48, 180, 1, GxEPD_BLACK);
+  display.drawCircle(20, 41, 4, GxEPD_BLACK);
+  display.drawCircle(33, 41, 4, GxEPD_BLACK);
+  display.drawCircle(46, 41, 4, GxEPD_BLACK);
+
+  // Content
+  display.setCursor(20, 70);
+  display.print("To set up your device,");
+  display.setCursor(20, 90);
+  display.print("connect to the WiFi:");
+  display.setCursor(20, 110);
+  display.print("  RatLabESP");
+  display.setCursor(20, 175);
+  display.print("ratlabstudio.com/help");
+}
+
+function page4() {
+  // Time
+  display.setFont("bold 12px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
+  display.setCursor(155, 14);
+  display.print(tt);
+
+  // Ribbon
+  display.setCursor(6, 14);
+  display.print("Rat Lab Studio");
+  display.fillRect(0, 20, 200, 1, GxEPD_BLACK);
+
+  // Desktop File
+  display.drawRect(5, 28, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 25, 12, 3, GxEPD_BLACK);
+
+  // Desktop File 2
+  display.drawRect(5, 59, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 56, 12, 3, GxEPD_BLACK);
+
+  // Desktop File 3
+  display.drawRect(5, 90, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 87, 12, 3, GxEPD_BLACK);
+
+  // Window
+  display.fillRect(12, 35, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 33, 180, 155, GxEPD_WHITE);
+  display.drawRect(10, 33, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 48, 180, 1, GxEPD_BLACK);
+  display.drawCircle(20, 41, 4, GxEPD_BLACK);
+  display.drawCircle(33, 41, 4, GxEPD_BLACK);
+  display.drawCircle(46, 41, 4, GxEPD_BLACK);
+
+  // Content
+  display.setCursor(20, 70);
+  display.print("Device Connected!");
+  display.setCursor(20, 90);
+  display.print("Go to the website:");
+  display.setCursor(20, 110);
+  display.print("  http://" + String("192.168.1.4"));
+  display.setCursor(20, 175);
+  display.print("ratlabstudio.com/help");
+}
+
+function page5() {
+  // Time
+  display.setFont("bold 12px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
+  display.setCursor(155, 14);
+  display.print(tt);
+
+  // Ribbon
+  display.setCursor(6, 14);
+  display.print("Rat Lab Studio");
+  display.fillRect(0, 20, 200, 1, GxEPD_BLACK);
+
+  // Desktop File
+  display.drawRect(5, 28, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 25, 12, 3, GxEPD_BLACK);
+
+  // Desktop File 2
+  display.drawRect(5, 59, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 56, 12, 3, GxEPD_BLACK);
+
+  // Desktop File 3
+  display.drawRect(5, 90, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 87, 12, 3, GxEPD_BLACK);
+
+  // Window
+  display.fillRect(12, 35, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 33, 180, 155, GxEPD_WHITE);
+  display.drawRect(10, 33, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 48, 180, 1, GxEPD_BLACK);
+  display.drawCircle(20, 41, 4, GxEPD_BLACK);
+  display.drawCircle(33, 41, 4, GxEPD_BLACK);
+  display.drawCircle(46, 41, 4, GxEPD_BLACK);
+
+  // Content
+  display.setCursor(20, 70);
+  display.print("Connection success!");
+  display.setCursor(20, 100);
+  display.print("Continue setup in ");
+  display.setCursor(22, 120);
+  display.print("browser.");
+  display.setCursor(20, 175);
+  display.print("ratlabstudio.com/help");
+}
+
+function page6() {
+
+}

@@ -1,0 +1,208 @@
+:root {
+  --cadet: rgb(105, 189, 192);
+  --blue: rgb(108, 224, 228);
+  --bluegreen: rgb(47, 255, 150);
+  --yellow: rgb(244, 210, 72);
+  --orange: rgb(234, 150, 47);
+  --red: rgb(242, 102, 77);
+  --pink: rgb(244, 27, 244);
+  --backgroundColor: rgb(36, 36, 36);
+  --lighterBackground: rgb(43, 43, 43);
+  --evenLighterBackground: rgb(53, 53, 53);
+  --fontSize: 24px;
+  --H1fontSize: 40px;
+  --H2fontSize: 36px;
+  --H3fontSize: 30px;
+  --H4fontSize: 28px;
+  --H5fontSize: 26px;
+}
+
+html,
+body {
+  background-color: var(--backgroundColor);
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-family: sans-serif;
+  height: 100%;
+  overflow: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+h1 {
+  font-size: 5.5vh;
+  text-align: center;
+  margin: 5vh;
+  color: var(--blue);
+  text-decoration: underline;
+}
+
+p {
+    font-size: 3vh;
+    max-width: 70%;
+    margin: auto;
+}
+
+button {
+  font-size: 3vh;
+  padding: 1vh;
+  color: #e5c53e;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: solid 2px #e5c53e;
+  border-radius: 1vh;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+button:active {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+#ribbon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background-color: var(--evenLighterBackground);
+  margin: 0;
+  z-index: 9;
+  cursor: pointer;
+}
+
+.windowButton {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  position: relative;
+  top: 50%;
+  margin-left: 10px;
+  transform: translateY(-50%);
+}
+
+#sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20%;
+  height: 100%;
+  margin: 0;
+  background-color: var(--lighterBackground);
+  padding: 0% 2% 0% 2%;
+  min-width: 175px;
+  max-width: 400px;
+  z-index: 1;
+}
+
+#documentBody {
+  background-color: var(--backgroundColor);
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80%;
+  height: 100%;
+  margin: 0;
+  text-align: center;
+  overflow-y: scroll;
+}
+
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-weight: bold;
+}
+
+/* # */
+.h1 {
+  font-size: var(--H1fontSize);
+  color: var(--blue);
+  text-decoration: underline;
+}
+
+/* ## */
+.h2 {
+  font-size: var(--H2fontSize);
+  color: var(--bluegreen);
+  text-decoration: underline;
+}
+
+/* ### */
+.h3 {
+  font-size: var(--H3fontSize);
+  color: var(--yellow);
+}
+
+canvas {
+  width: 50vh;
+  aspect-ratio: 1;
+  background-color: #dfdbd4;
+  border: solid 2px black;
+  border-radius: 1vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.toggle {
+  font-size: 4vh;
+  font-weight: bold;
+  padding: 2vh;
+}
+
+input,
+select {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 3vh;
+  border: solid 2px white;
+  border-radius: 1vh;
+  padding: 1vh;
+}
+
+option {
+  background-color: white;
+  color: black;
+  border: solid 1px black;
+  border-radius: 1vh;
+}
+
+#displayContainer {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    row-gap: 10vh;
+    margin: auto;
+    width: 95%;
+}
+
+.displayTile {
+    margin: auto;
+    width: 75%;
+    cursor: pointer;
+    border-radius: 2vh;
+    padding: 2vh;
+    transition: background-color 0.2s ease;
+}
+
+.displayTile:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
