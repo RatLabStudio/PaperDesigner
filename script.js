@@ -10,8 +10,11 @@ const GxEPD_BLACK = "#000000";
 const DejaVu_Sans_Condensed = new FontFace("DejaVu_Sans_Condensed", "url(src/fonts/DejaVuSansCondensed.ttf)");
 document.fonts.add(DejaVu_Sans_Condensed);
 
-const DSEG7 = new FontFace("DSEG7", "url(src/fonts/dseg7-classic-latin-700-normal.ttf)");
+const DSEG7 = new FontFace("DSEG7", "url(src/fonts/Orbitron-Regular.ttf)");
 document.fonts.add(DSEG7);
+
+const Meteocons = new FontFace("Meteocons", "url(src/fonts/meteocons.ttf)");
+document.fonts.add(Meteocons);
 
 let fontLoaded = false;
 
@@ -105,19 +108,46 @@ class RTC {
 let rtc = new RTC();
 
 let display = new Display();
-let tt;
+let tt, ampm;
 let voltageSegments = 4;
 let dateString;
 let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 let tmp = 76;
 let hum2 = 45;
+let wTemp = "75";
+let wHumidity = "71";
+let wDesc = "Cloudy";
+let cityName = "St. Petersburg";
+let region = "FL";
+let useFahrenheit = true;
+let use12hr = true;
+
+let weatherIcons = {
+  Clear: "B",
+  Cloudy: "H",
+  Fog: "E",
+  Drizzle: "Q",
+  Rain: "R",
+  Snow: "W",
+  Thunder: "P",
+};
+
+function getWeatherIcon() {
+  return weatherIcons.Cloudy;
+}
 
 DejaVu_Sans_Condensed.load()
   .then(function (font) {
     DSEG7.load()
       .then(function (font) {
-        fontLoaded = true;
-        update();
+        Meteocons.load()
+          .then(function (font) {
+            fontLoaded = true;
+            update();
+          })
+          .catch(function (error) {
+            console.error("Error loading font:", error);
+          });
       })
       .catch(function (error) {
         console.error("Error loading font:", error);
@@ -130,7 +160,7 @@ DejaVu_Sans_Condensed.load()
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  page5();
+  page7();
 }
 
 function update() {
@@ -142,7 +172,7 @@ function update() {
   else hourStr = String(h);
   if (m < 10) minStr = "0" + String(m);
   else minStr = String(m);
-  let hour12, ampm;
+  let hour12;
   if (h == 0) {
     hour12 = 12;
     ampm = "AM";
@@ -406,5 +436,114 @@ function page5() {
 }
 
 function page6() {
+  // City Name
+  display.setFont("bold 14px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
+  display.setCursor(15, 25);
+  display.print(cityName);
 
+  // Region
+  display.fillRoundRect(155, 11, 30, 18, 2, GxEPD_BLACK);
+  display.setTextColor(GxEPD_WHITE);
+  display.setCursor(161, 25);
+  display.print(region);
+
+  // Date
+  display.setTextColor(GxEPD_BLACK);
+  display.setCursor(15, 145);
+  display.print(dateString);
+
+  // Weekday
+  display.setCursor(90, 145);
+  display.print(days[rtc.getWeekday()]);
+
+  // AM / PM
+  if (use12hr) {
+    display.fillRoundRect(155, 82, 30, 18, 2, GxEPD_BLACK);
+    display.setTextColor(GxEPD_WHITE);
+    display.setCursor(159, 96);
+    display.print(ampm);
+  }
+
+  // Temperature
+  display.setTextColor(GxEPD_BLACK);
+  display.setCursor(15, 55);
+  if (useFahrenheit) display.print(String(wTemp) + "*F, " + String(wDesc));
+  else display.print(String(wTemp) + "*C, " + String(wDesc));
+
+  // Humidity Icon
+  for (let i = 0; i < 6; i++) display.fillCircle(100, 180 - i * 3, 6 - i, GxEPD_BLACK);
+  //for (int i = 0; i < 6; i++) { display.fillCircle(100, 180 - i * 3, 6 - i, GxEPD_BLACK); }
+
+  // Humidity
+  display.setFont("bold 14px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
+  display.setCursor(30, 182);
+  display.print("O: " + String(wHumidity) + "%");
+  display.setCursor(118, 182);
+  display.print("I: " + String(hum2) + "%");
+
+  // Humidity Lines
+  display.fillRect(16, 160, 1, 30, GxEPD_BLACK);
+  display.fillRect(183, 160, 1, 30, GxEPD_BLACK);
+
+  // Time Lines
+  display.fillRect(15, 71, 170, 1, GxEPD_BLACK);
+  display.fillRect(15, 120, 170, 1, GxEPD_BLACK);
+
+  // Time
+  display.setFont("bold 38px DSEG7");
+  //display.setFont(&Orbitron_Medium_38);
+  display.setCursor(15, 110);
+  display.print(tt);
+
+  // Weather Icon
+  display.setFont("bold 22px Meteocons");
+  //display.setFont(&Meteocons_Regular_22);
+  display.setCursor(152, 60);
+  display.print(String(getWeatherIcon(wDesc)));
+}
+
+function page7() {
+  // Time
+  display.setFont("bold 12px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
+  display.setCursor(155, 14);
+  display.print(tt);
+
+  // Ribbon
+  display.setCursor(6, 14);
+  display.print("Rat Lab Studio");
+  display.fillRect(0, 20, 200, 1, GxEPD_BLACK);
+
+  // Desktop File
+  display.drawRect(5, 28, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 25, 12, 3, GxEPD_BLACK);
+
+  // Desktop File 2
+  display.drawRect(5, 59, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 56, 12, 3, GxEPD_BLACK);
+
+  // Desktop File 3
+  display.drawRect(5, 90, 30, 18, GxEPD_BLACK);
+  display.drawRect(5, 87, 12, 3, GxEPD_BLACK);
+
+  // Window
+  display.fillRect(12, 35, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 33, 180, 155, GxEPD_WHITE);
+  display.drawRect(10, 33, 180, 155, GxEPD_BLACK);
+  display.fillRect(10, 48, 180, 1, GxEPD_BLACK);
+  display.drawCircle(20, 41, 4, GxEPD_BLACK);
+  display.drawCircle(33, 41, 4, GxEPD_BLACK);
+  display.drawCircle(46, 41, 4, GxEPD_BLACK);
+
+  // Content
+  display.setCursor(20, 70);
+  display.print("To configure, go to");
+  display.setCursor(20, 100);
+  display.print("http://" + String("") + "");
+  display.setCursor(20, 130);
+  display.print("in your browser.");
+  display.setCursor(20, 175);
+  display.print("ratlabstudio.com/help");
 }

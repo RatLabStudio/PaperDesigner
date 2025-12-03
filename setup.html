@@ -4,8 +4,182 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Display Settings | Rat Lab Studio</title>
-    <link rel="stylesheet" href="style.css" />
     <style>
+      :root {
+        --cadet: rgb(105, 189, 192);
+        --blue: rgb(108, 224, 228);
+        --bluegreen: rgb(47, 255, 150);
+        --yellow: rgb(244, 210, 72);
+        --orange: rgb(234, 150, 47);
+        --red: rgb(242, 102, 77);
+        --pink: rgb(244, 27, 244);
+        --backgroundColor: rgb(36, 36, 36);
+        --lighterBackground: rgb(43, 43, 43);
+        --evenLighterBackground: rgb(53, 53, 53);
+      }
+
+      html,
+      body {
+        background-color: var(--backgroundColor);
+        margin: 0;
+        padding: 0;
+        color: white;
+        font-family: sans-serif;
+        height: 100%;
+        overflow: hidden;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      h1 {
+        font-size: 5vh;
+        text-align: center;
+        margin-top: 5vh;
+
+        color: var(--blue);
+      }
+
+      p {
+        font-size: 3vh;
+        max-width: 70%;
+        margin: auto;
+      }
+
+      a {
+        color: var(--yellow);
+      }
+
+      button {
+        font-size: 3vh;
+        padding: 1vh;
+        color: #e5c53e;
+        margin: 0;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: solid 2px #e5c53e;
+        border-radius: 1vh;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      button:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+      }
+
+      button:active {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+
+      #ribbon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        background-color: var(--evenLighterBackground);
+        margin: 0;
+        z-index: 9;
+        cursor: pointer;
+      }
+
+      #mobileRibbon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 11vh;
+        background-color: rgba(58, 58, 58, 0.75);
+        box-shadow: 0px 0px 8px black;
+        backdrop-filter: blur(5px);
+        z-index: 8;
+      }
+
+      .windowButton {
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        border: none;
+        position: relative;
+        top: 50%;
+        margin-left: 10px;
+        transform: translateY(-50%);
+      }
+
+      #sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        margin: 0;
+        background-color: var(--lighterBackground);
+        padding: 0% 2% 0% 2%;
+        z-index: 1;
+        padding-left: 5vh;
+      }
+
+      #sidebar button {
+        min-width: 75%;
+        color: var(--bluegreen);
+        border-color: var(--bluegreen);
+      }
+
+      #documentBody {
+        background-color: var(--backgroundColor);
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        margin: 0;
+        text-align: center;
+        overflow-y: scroll;
+      }
+
+      .page {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      input,
+      select {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 3vh;
+        border: solid 2px white;
+        border-radius: 1vh;
+        padding: 1vh;
+      }
+
+      #networkOptions {
+        width: 75%;
+        max-width: 500px;
+      }
+
+      .passwordContainer {
+        display: flex;
+        width: 75%;
+        max-width: 500px;
+        gap: 1vh;
+        margin: auto;
+      }
+
+      #password {
+        width: 100%;
+      }
+
+      option {
+        background-color: white;
+        color: black;
+        border: solid 1px black;
+        border-radius: 1vh;
+      }
+
+      .toggle {
+        min-width: 10vh;
+      }
+
       canvas {
         position: relative;
         width: 75%;
@@ -15,6 +189,43 @@
         margin: auto;
         transform: translateX(-64%);
       }
+
+      .setupOptions {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 2vh;
+        margin: 2vh;
+      }
+
+      .setupOptionTile {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: none;
+        border-radius: 2vh;
+        padding: 2vh;
+      }
+
+      .sidebarButton {
+        position: absolute;
+        top: 2vh;
+        left: 2vh;
+        width: 7vh;
+        aspect-ratio: 1;
+        z-index: 100;
+        border-color: var(--bluegreen);
+        backdrop-filter: blur(5px);
+      }
+
+      .buttonLine {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60%;
+        height: 0.5vh;
+        background-color: rgba(255, 255, 255, 0.75);
+        border: none;
+        border-radius: 1vh;
+      }
     </style>
   </head>
   <body>
@@ -23,276 +234,243 @@
       <button class="windowButton" style="background-color: var(--yellow)"></button>
       <button class="windowButton" style="background-color: var(--bluegreen)"></button>
     </div>
-    <div id="sidebar">
-      <br /><br /><br />
-      <h2 style="margin-bottom: 10px"><a href="https://ratlabstudio.com" style="color: rgb(108, 224, 228)">Rat Lab Studio</a></h2>
-      <br />
-      <h2 style="font-weight: normal">Display Setup</h2>
+    <div id="mobileRibbon">
+      <button class="windowButton" style="background-color: rgba(0,0,0,0)"></button>
+      <button class="windowButton" style="background-color: rgba(0,0,0,0)"></button>
+      <button class="windowButton" style="background-color: rgba(0,0,0,0)"></button>
+      <button class="windowButton" style="background-color: var(--red)"></button>
+      <button class="windowButton" style="background-color: var(--yellow)"></button>
+      <button class="windowButton" style="background-color: var(--bluegreen)"></button>
     </div>
-    <div id="documentBody">
-      <div class="page" id="networkPage" style="visibility: hidden">
-        <br /><br />
-        <h1>Rat Lab Display Setup</h1>
+    <div class="mainBody">
+      <button id="sidebarButton" class="sidebarButton" onclick="toggleSidebar()">
+        <div class="buttonLine" style="top: 30%"></div>
+        <div class="buttonLine"></div>
+        <div class="buttonLine" style="top: 70%"></div>
+      </button>
+      <div id="sidebar">
+        <br /><br /><br /><br /><br />
+        <h2 style="margin-bottom: 10px"><a href="https://ratlabstudio.com" style="color: rgb(108, 224, 228)">Rat Lab Studio</a></h2>
         <br />
-        <p>Input your home network credentials below to allow your device to connect to the internet.</p>
-        <br /><br /><br />
-        <h3>Network Name</h3>
+        <h2 style="font-weight: normal">ePaper Setup</h2>
         <br />
-        <select id="networkOptions" placeholder="SSID"></select>
+        <button onclick="openPage('networkPage')">Network</button>
         <br /><br /><br />
-        <h3>Network Password</h3>
-        <br />
-        <input id="password" placeholder="Password" type="password" />
-        <br /><br /><br />
-        <button onclick="connect()">Connect</button>
+        <button onclick="openPage('setupPage')">Setup</button>
+        <h3 style="position: absolute; bottom: 5vh; left: 5vh"><a href="https://ratlabstudio.com/help">Need Help?</a></h3>
       </div>
+      <div id="documentBody">
+        <div class="page" id="networkPage" style="visibility: visible">
+          <br /><br /><br /><br />
+          <h1>Network Setup</h1>
+          <br />
+          <p>Input your home network credentials below to allow your device to connect to the internet.</p>
+          <br /><br />
+          <h2>Network Name</h2>
+          <select id="networkOptions" placeholder="SSID"></select>
+          <br /><br /><br />
+          <h2>Network Password</h2>
+          <div class="passwordContainer">
+            <input id="password" placeholder="Password" type="password" />
+            <button id="showButton" onclick="togglePasswordShow()" style="width: 40%; max-width: 125px">Show</button>
+          </div>
+          <br /><br /><br />
+          <p id="failMessage" style="color: var(--red); visibility: hidden">Connection failed! Double-check your password and try again.</p>
+          <br />
+          <button id="connectButton" onclick="connect()">Connect</button>
+          <br /><br /><br /><br />
+        </div>
 
-      <div class="page" id="screensPage" style="visibility: visible">
-        <br />
-        <h1>Screen Setup</h1>
-        <br />
-        <p>Choose a display setting to use:</p>
-        <br />
-        <div id="displayContainer"></div>
+        <div class="page" id="setupPage" style="visibility: hidden">
+          <br /><br /><br /><br />
+          <h1>Additional Setup</h1>
+          <br />
+          <div class="setupOptions">
+            <div class="setupOptionTile">
+              <h2>Temperature Units</h2>
+              <br />
+              <button id="tempUnits" class="toggle" onclick="toggleTemp()">Fahrenheit</button>
+              <br /><br />
+            </div>
+            <div class="setupOptionTile">
+              <h2>Time Format</h2>
+              <br />
+              <button id="timeFormat" class="toggle" onclick="toggleTimeFormat()">12hr</button>
+              <br /><br />
+            </div>
+            <div class="setupOptionTile">
+              <h2>Date Format</h2>
+              <br />
+              <button id="dateFormat" class="toggle" onclick="toggleDateFormat()">mm/dd/yy</button>
+              <br /><br />
+            </div>
+          </div>
+          <br /><br /><br />
+          <button id="applyButton" onclick="apply()" style="color: var(--bluegreen); border-color: var(--bluegreen); margin-bottom: 5vh">Apply Changes</button>
+        </div>
       </div>
     </div>
-
     <script>
       networkOptions = "%networks%".split(",");
       for (let i = 0; i < networkOptions.length; i++) {
-        document.getElementById("networkOptions").innerHTML += `
-                            <option value='${networkOptions[i]}'>${networkOptions[i]}</option>
-                        `;
+        document.getElementById("networkOptions").innerHTML += `<option value='${networkOptions[i]}'>${networkOptions[i]}</option>`;
       }
 
-      document.getElementById("networkOptions").addEventListener("change", (e) => {
-        fetch(`/set1?value=${e.target.value}`)
-          .then((r) => r.text())
-          .then((t) => console.log(t));
-      });
+      document.getElementById("networkOptions").addEventListener("change", (e) => {});
 
       function connect() {
         let SSID = document.getElementById("networkOptions").value;
-        let password = document.getElementById("password").value;
-        fetch(`/set2?value=${password}`)
+        let password = encodeURIComponent(document.getElementById("password").value);
+        document.getElementById("connectButton").innerHTML = "Connecting...";
+        let failMessage = document.getElementById("failMessage");
+        failMessage.style.visibility = "hidden";
+        let failed = false;
+
+        fetch(`/set1?value=${encodeURIComponent(SSID)}`)
           .then((r) => r.text())
           .then((t) => console.log(t))
           .then(() => {
-            document.getElementById("networkPage").style.visibility = "hidden";
-            document.getElementById("screensPage").style.visibility = "visible";
+            fetch(`/set2?value=${password}`)
+              .then((r) => r.text())
+              .then((t) => {
+                console.log(t);
+                if (t == "failed") {
+                  failMessage.innerHTML = "Connection failed! Double-check your password and try again.";
+                  failMessage.style.visibility = "visible";
+                  document.getElementById("connectButton").innerHTML = "Connect";
+                  failed = true;
+                } else if (t == "location error") {
+                  failMessage.innerHTML = "Error: Location services unavailable!";
+                  failMessage.style.visibility = "visible";
+                  document.getElementById("connectButton").innerHTML = "Connect";
+                  failed = true;
+                } else {
+                  failMessage.style.visibility = "hidden";
+                }
+              })
+              .then(() => {
+                if (!failed) openPage("setupPage");
+              });
           });
       }
       document.connect = connect;
 
-      // ---------- DISPLAY PAGE ----------
-      const displayContainer = document.getElementById("displayContainer");
-      let displays = [];
-
-      class Display {
-        constructor(id, name) {
-          this.id = id;
-          this.name = name;
-          displayContainer.innerHTML += `
-          <div class="displayTile" id="display${this.id}">
-            <canvas id="canvas${this.id}" width="200" height="200"></canvas>
-            <br>
-            <p>${this.name}</p>
-          </div>`;
-          this.canvas = document.getElementById(`canvas${this.id}`);
-          this.ctx = this.canvas.getContext("2d");
-          this.ctx.imageSmoothingEnabled = false;
-          this.ctx.webkitImageSmoothingEnabled = false;
-          this.ctx.letterSpacing = "1.75px";
-
-          this.cursor = {
-            x: 0,
-            y: 0,
-          };
-        }
-
-        drawRect(x, y, width, height, color) {
-          this.ctx.fillStyle = color;
-          this.ctx.strokeRect(x, y, width, height);
-        }
-
-        fillRect(x, y, width, height, color) {
-          this.ctx.fillStyle = color;
-          this.ctx.fillRect(x, y, width, height);
-        }
-
-        fillRoundRect(x, y, width, height, radius, color) {
-          this.ctx.fillStyle = color;
-          this.ctx.beginPath();
-          this.ctx.roundRect(x, y, width, height, radius);
-          this.ctx.fill();
-        }
-
-        drawCircle(x, y, radius, color) {
-          this.ctx.fillStyle = color;
-          this.ctx.beginPath();
-          this.ctx.arc(x, y, radius, 0, 360, false);
-          this.ctx.stroke();
-        }
-
-        fillCircle(x, y, radius, color) {
-          this.ctx.fillStyle = color;
-          this.ctx.beginPath();
-          this.ctx.arc(x, y, radius, 0, 360, false);
-          this.ctx.fill();
-        }
-
-        setTextColor(color) {
-          this.ctx.fillStyle = color;
-        }
-
-        setFont(font) {
-          this.ctx.font = font;
-        }
-
-        setCursor(x, y) {
-          this.cursor.x = x;
-          this.cursor.y = y;
-        }
-
-        print(text) {
-          this.ctx.fillText(text, this.cursor.x, this.cursor.y);
-        }
-
-        draw() {
-          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-          // Draw Code Here
-        }
-
-        update() {
-          //this.draw();
-        }
-
-        parseInstruction(instruction) {
-          console.log(instruction);
-          let keys = Object.keys(instruction);
-
-          if (keys[0] == "text") {
-            this.setTextColor(instruction.color);
-            this.setCursor(instruction.position.x, instruction.position.y);
-            this.print(instruction.text);
-          }
-        }
-      }
-
-      class RTC {
-        constructor() {
-          this.date = new Date();
-        }
-
-        getWeekday() {
-          return this.date.getDay();
-        }
-
-        getHour() {
-          return this.date.getHours();
-        }
-
-        getMinute() {
-          return this.date.getMinutes();
-        }
-
-        getMonth() {
-          return this.date.getMonth();
-        }
-
-        getDay() {
-          return this.date.getDate();
-        }
-
-        getYear() {
-          return this.date.getFullYear();
-        }
-      }
-
-      let rtc = new RTC();
-
-      let tt;
-      let voltageSegments = 4;
-      let dateString;
-      let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      let tmp = 76;
-      let hum2 = 45;
-
-      /*DejaVu_Sans_Condensed.load()
-        .then(function (font) {
-          DSEG7.load()
-            .then(function (font) {
-              fontLoaded = true;
-              update();
-            })
-            .catch(function (error) {
-              console.error("Error loading font:", error);
-            });
-        })
-        .catch(function (error) {
-          console.error("Error loading font:", error);
-        });*/
-
-      function update() {
-        rtc.date = new Date();
-
-        h = rtc.getHour();
-        m = rtc.getMinute();
-        if (h < 10) hourStr = "0" + String(h);
-        else hourStr = String(h);
-        if (m < 10) minStr = "0" + String(m);
-        else minStr = String(m);
-        let hour12, ampm;
-        if (h == 0) {
-          hour12 = 12;
-          ampm = "AM";
-        } else if (h == 12) {
-          hour12 = 12;
-          ampm = "PM";
-        } else if (h > 12) {
-          hour12 = h - 12;
-          ampm = "PM";
+      let currentPage = "networkPage";
+      function openPage(page) {
+        if (document.getElementById(page)) {
+          document.getElementById(currentPage).style.visibility = "hidden";
+          document.getElementById(page).style.visibility = "visible";
+          currentPage = page;
+          updateUI();
         } else {
-          hour12 = h;
-          ampm = "AM";
+          console.error(`Page ${page} not found!`);
         }
-        tt = String(hour12) + ":" + minStr;
-
-        dateString = rtc.getMonth() + 1 + "/" + rtc.getDay() + "/" + (rtc.getYear() - 2000);
-
-        for (let i = 0; i < displays.length; i++) displays[i].update();
       }
+      document.currentPage = currentPage;
+      document.openPage = openPage;
 
-      setInterval(function () {
-        update();
-      }, 1000);
+      // Temperature Units Handling
+      let tempUnitsToggle = document.getElementById("tempUnits");
+      let tempUnits = tempUnitsToggle.innerHTML.toLowerCase();
+      function toggleTemp() {
+        if (tempUnits == "fahrenheit") tempUnitsToggle.innerHTML = "Celsius";
+        else tempUnitsToggle.innerHTML = "Fahrenheit";
+        tempUnits = tempUnitsToggle.innerHTML.toLowerCase();
+      }
+      document.toggleTemp = toggleTemp;
 
-      let pixelation = false;
-      function togglePixelation() {
-        if (!pixelation) {
-          canvas.style.imageRendering = "pixelated";
-          pixelation = true;
+      // Temperature Units Handling
+      let timeFormatToggle = document.getElementById("timeFormat");
+      let timeFormat = timeFormatToggle.innerHTML.toLowerCase();
+      function toggleTimeFormat() {
+        if (timeFormat == "12hr") timeFormatToggle.innerHTML = "24hr";
+        else timeFormatToggle.innerHTML = "12hr";
+        timeFormat = timeFormatToggle.innerHTML.toLowerCase();
+      }
+      document.toggleTimeFormat = toggleTimeFormat;
+
+      function apply() {
+        document.getElementById("applyButton").innerHTML = "Applying...";
+        fetch(`/set3?value=${tempUnits},${timeFormat},${currentDateFormat}`)
+          .then((r) => r.text())
+          .then((t) => console.log(t))
+          .then(() => (document.getElementById("applyButton").innerHTML = "Apply Changes"));
+      }
+      document.apply = apply;
+
+      const dateFormatButton = document.getElementById("dateFormat");
+      let dateFormats = ["mm/dd/yy", "dd/mm/yy", "yy/mm/dd"];
+      let currentDateFormat = 0;
+      function toggleDateFormat() {
+        currentDateFormat++;
+        if (currentDateFormat >= dateFormats.length) currentDateFormat = 0;
+        dateFormatButton.innerHTML = dateFormats[currentDateFormat];
+      }
+      document.toggleDateFormat = toggleDateFormat;
+
+      const sidebar = document.getElementById("sidebar");
+      const sidebarButton = document.getElementById("sidebarButton");
+      const documentBody = document.getElementById("documentBody");
+      const ribbon = document.getElementById("ribbon");
+      const mobileRibbon = document.getElementById("mobileRibbon");
+
+      function updateUI() {
+        if (window.innerWidth < 1200) {
+          sidebar.style.visibility = "hidden";
+          sidebar.style.width = "0%";
+          documentBody.style.width = "100%";
+          sidebarButton.style.visibility = "visible";
+          ribbon.style.visibility = "hidden";
+          mobileRibbon.style.visibility = "visible";
+          try {
+            canvas.style.width = "80%";
+          } catch {}
         } else {
-          canvas.style.imageRendering = "auto";
-          pixelation = false;
+          sidebar.style.visibility = "visible";
+          sidebar.style.width = "15%";
+          documentBody.style.width = "80%";
+          sidebarButton.style.visibility = "hidden";
+          ribbon.style.visibility = "visible";
+          mobileRibbon.style.visibility = "hidden";
+          try {
+            canvas.style.width = "50vh";
+          } catch {}
         }
       }
-      document.togglePixelation = togglePixelation;
 
-      fetch("programs.json")
-        .then((response) => response.json())
-        .then((data) => {
-          let keys = Object.keys(data);
-          for (let i = 0; i < keys.length; i++) {
-            displays.push(new Display(i, keys[i]));
-            let iKeys = Object.keys(data[keys[i]].instructions);
-            for (let j = 0; j < iKeys.length; j++) {
-              displays[i].parseInstruction(data[keys[i]].instructions[iKeys[j]]);
-            }
-          }
-        })
-        .catch((error) => console.error("Error loading JSON:", error));
+      window.addEventListener("resize", (e) => {
+        updateUI();
+      });
+      updateUI();
+
+      function toggleSidebar() {
+        if (sidebar.style.visibility == "hidden") {
+          sidebar.style.visibility = "visible";
+          sidebar.style.width = "75%";
+        } else {
+          sidebar.style.visibility = "hidden";
+          sidebar.style.width = "0%";
+        }
+      }
+
+      const passwordInput = document.getElementById("password");
+      const showButton = document.getElementById("showButton");
+      function togglePasswordShow() {
+        if (passwordInput.type == "password") {
+          passwordInput.type = "text";
+          showButton.innerHTML = "Hide";
+        } else {
+          passwordInput.type = "password";
+          showButton.innerHTML = "Show";
+        }
+      }
+
+      document.addEventListener("keypress", (e) => {
+        if (e.key == "Enter") {
+          if (currentPage == "networkPage") connect();
+          else if (currentPage == "setupPage") apply();
+        }
+      });
     </script>
-    <script src="ui.js"></script>
   </body>
 </html>
