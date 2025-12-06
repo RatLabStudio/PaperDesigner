@@ -18,6 +18,26 @@
         --evenLighterBackground: rgb(53, 53, 53);
       }
 
+      @keyframes slideIn {
+        from {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
       html,
       body {
         background-color: var(--backgroundColor);
@@ -59,6 +79,7 @@
         border-radius: 1vh;
         cursor: pointer;
         transition: background-color 0.2s ease;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
       }
 
       button:hover {
@@ -79,6 +100,7 @@
         margin: 0;
         z-index: 9;
         cursor: pointer;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
       }
 
       #mobileRibbon {
@@ -102,6 +124,7 @@
         top: 50%;
         margin-left: 10px;
         transform: translateY(-50%);
+        box-shadow: none;
       }
 
       #sidebar {
@@ -114,6 +137,11 @@
         padding: 0% 2% 0% 2%;
         z-index: 1;
         padding-left: 5vh;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      #sidebar.animate {
+        animation: slideIn 0.4s ease-out forwards;
       }
 
       #sidebar button {
@@ -150,6 +178,7 @@
         border: solid 2px white;
         border-radius: 1vh;
         padding: 1vh;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
       }
 
       #networkOptions {
@@ -177,7 +206,9 @@
       }
 
       .toggle {
-        min-width: 10vh;
+        min-width: 12vh;
+        max-width: 100%;
+        overflow: hidden;
       }
 
       canvas {
@@ -192,9 +223,10 @@
 
       .setupOptions {
         display: grid;
-        grid-template-columns: auto auto;
-        gap: 2vh;
+        grid-template-columns: 50% 50%;
+        gap: 1vh;
         margin: 2vh;
+        transform: translateX(-0.5vh);
       }
 
       .setupOptionTile {
@@ -202,6 +234,8 @@
         border: none;
         border-radius: 2vh;
         padding: 2vh;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.4s ease-in;
       }
 
       .sidebarButton {
@@ -235,9 +269,9 @@
       <button class="windowButton" style="background-color: var(--bluegreen)"></button>
     </div>
     <div id="mobileRibbon">
-      <button class="windowButton" style="background-color: rgba(0,0,0,0)"></button>
-      <button class="windowButton" style="background-color: rgba(0,0,0,0)"></button>
-      <button class="windowButton" style="background-color: rgba(0,0,0,0)"></button>
+      <button class="windowButton" style="background-color: rgba(0, 0, 0, 0)"></button>
+      <button class="windowButton" style="background-color: rgba(0, 0, 0, 0)"></button>
+      <button class="windowButton" style="background-color: rgba(0, 0, 0, 0)"></button>
       <button class="windowButton" style="background-color: var(--red)"></button>
       <button class="windowButton" style="background-color: var(--yellow)"></button>
       <button class="windowButton" style="background-color: var(--bluegreen)"></button>
@@ -302,6 +336,12 @@
               <h2>Date Format</h2>
               <br />
               <button id="dateFormat" class="toggle" onclick="toggleDateFormat()">mm/dd/yy</button>
+              <br /><br />
+            </div>
+            <div class="setupOptionTile">
+              <h2>Color Mode</h2>
+              <br />
+              <button id="colorMode" class="toggle" onclick="toggleColorMode()">Light</button>
               <br /><br />
             </div>
           </div>
@@ -391,7 +431,7 @@
 
       function apply() {
         document.getElementById("applyButton").innerHTML = "Applying...";
-        fetch(`/set3?value=${tempUnits},${timeFormat},${currentDateFormat}`)
+        fetch(`/set3?value=${tempUnits},${timeFormat},${currentDateFormat},${colorMode}`)
           .then((r) => r.text())
           .then((t) => console.log(t))
           .then(() => (document.getElementById("applyButton").innerHTML = "Apply Changes"));
@@ -408,6 +448,14 @@
       }
       document.toggleDateFormat = toggleDateFormat;
 
+      const colorModeButton = document.getElementById("colorMode");
+      let colorMode = colorModeButton.innerHTML;
+      function toggleColorMode() {
+        if (colorMode == "Light") colorMode = "Dark";
+        else colorMode = "Light";
+        colorModeButton.innerHTML = colorMode;
+      }
+
       const sidebar = document.getElementById("sidebar");
       const sidebarButton = document.getElementById("sidebarButton");
       const documentBody = document.getElementById("documentBody");
@@ -416,6 +464,7 @@
 
       function updateUI() {
         if (window.innerWidth < 1200) {
+          sidebar.classList.remove("animate");
           sidebar.style.visibility = "hidden";
           sidebar.style.width = "0%";
           documentBody.style.width = "100%";
@@ -428,6 +477,7 @@
         } else {
           sidebar.style.visibility = "visible";
           sidebar.style.width = "15%";
+          sidebar.classList.add("animate");
           documentBody.style.width = "80%";
           sidebarButton.style.visibility = "hidden";
           ribbon.style.visibility = "visible";
@@ -447,7 +497,9 @@
         if (sidebar.style.visibility == "hidden") {
           sidebar.style.visibility = "visible";
           sidebar.style.width = "75%";
+          sidebar.classList.add("animate");
         } else {
+          sidebar.classList.remove("animate");
           sidebar.style.visibility = "hidden";
           sidebar.style.width = "0%";
         }
