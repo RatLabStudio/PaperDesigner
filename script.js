@@ -163,7 +163,7 @@ DejaVu_Sans_Condensed.load()
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  page8();
+  page6();
 }
 
 const BLACK = GxEPD_BLACK,
@@ -451,17 +451,83 @@ function page5() {
   display.print("ratlabstudio.com/help");
 }
 
-function page6() {
-  // Background
-  display.fillRect(0, 0, 200, 200, blankColor);
+function mainTimeDesign() {
+  // Time
+  display.setTextColor(color);
+  display.setFont("bold 38px DSEG7");
+  //display.setFont(&Orbitron_Medium_38);
+  display.setCursor(15, 110);
+  display.print(tt);
 
-  // Bezel
-  /*if (color == BLACK) {
-    display.fillRect(0, 0, 200, 4, color); // Top
-    display.fillRect(0, 196, 200, 4, color); // Bottom
-    display.fillRect(0, 4, 4, 192, color); // Left
-    display.fillRect(196, 4, 4, 192, color); // Right
-  }*/
+  // AM / PM
+  if (use12hr) {
+    display.setFont("bold 14px DejaVu_Sans_Condensed");
+    //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
+    display.fillRoundRect(155, 82, 30, 18, 2, color);
+    display.setTextColor(blankColor);
+    display.setCursor(159, 96);
+    display.print(ampm);
+  }
+}
+
+function otherTimeDesign() {
+  display.setFont("bold 12px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
+  display.setTextColor(color);
+  display.setCursor(155, 14);
+  display.print(tt);
+}
+
+function dateDesign() {
+  display.setFont("bold 14px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
+
+  // Date
+  display.setTextColor(color);
+  display.setCursor(15, 145);
+  display.print(dateString);
+
+  // Weekday
+  display.setCursor(90, 145);
+  display.print(days[rtc.getWeekday()]);
+}
+
+function weatherDesign() {
+  // Temperature
+  display.setFont("bold 14px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
+  display.setTextColor(color);
+  display.setCursor(15, 55);
+  if (useFahrenheit) display.print(String(wTemp) + "*F, " + String(wDesc));
+  else display.print(String(wTemp) + "*C, " + String(wDesc));
+
+  // Weather Icon
+  display.setFont("bold 22px Meteocons");
+  //display.setFont(&Meteocons_Regular_22);
+  display.setCursor(152, 60);
+  //display.print(String(wIcon));
+  display.print(String(getWeatherIcon(wDesc)));
+}
+
+function humidityDesign() {
+  // Humidity Icon
+  for (let i = 0; i < 6; i++) display.fillCircle(100, 180 - i * 3, 6 - i, color);
+  //for (int i = 0; i < 6; i++) { display.fillCircle(100, 180 - i * 3, 6 - i, color); }
+
+  // Humidity
+  display.setFont("bold 14px DejaVu_Sans_Condensed");
+  //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
+  display.setTextColor(color);
+  display.setCursor(30, 182);
+  display.print("O: " + String(wHumidity) + "%");
+  display.setCursor(118, 182);
+  display.print("I: " + String(hum2) + "%");
+}
+
+function page6() {
+  // Color Setup
+  display.fillRect(0, 0, 200, 200, blankColor);
+  display.setTextColor(color);
 
   // City Name
   display.setTextColor(color);
@@ -476,61 +542,18 @@ function page6() {
   display.setCursor(161, 25);
   display.print(region);
 
-  // Date
-  display.setTextColor(color);
-  display.setCursor(15, 145);
-  display.print(dateString);
-
-  // Weekday
-  display.setCursor(90, 145);
-  display.print(days[rtc.getWeekday()]);
-
-  // AM / PM
-  if (use12hr) {
-    display.fillRoundRect(155, 82, 30, 18, 2, color);
-    display.setTextColor(blankColor);
-    display.setCursor(159, 96);
-    display.print(ampm);
-  }
-
-  // Temperature
-  display.setTextColor(color);
-  display.setCursor(15, 55);
-  if (useFahrenheit) display.print(String(wTemp) + "*F, " + String(wDesc));
-  else display.print(String(wTemp) + "*C, " + String(wDesc));
-
-  // Humidity Icon
-  for (let i = 0; i < 6; i++) display.fillCircle(100, 180 - i * 3, 6 - i, color);
-  //for (int i = 0; i < 6; i++) { display.fillCircle(100, 180 - i * 3, 6 - i, color); }
-
-  // Humidity
-  display.setFont("bold 14px DejaVu_Sans_Condensed");
-  //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
-  display.setCursor(30, 182);
-  display.print("O: " + String(wHumidity) + "%");
-  display.setCursor(118, 182);
-  display.print("I: " + String(hum2) + "%");
-
   // Humidity Lines
-  display.fillRect(16, 160, 1, 30, color);
-  display.fillRect(183, 160, 1, 30, color);
+  //display.fillRect(16, 160, 1, 30, color);
+  //display.fillRect(183, 160, 1, 30, color);
 
   // Time Lines
   display.fillRect(15, 71, 170, 1, color);
   display.fillRect(15, 120, 170, 1, color);
 
-  // Time
-  display.setFont("bold 38px DSEG7");
-  //display.setFont(&Orbitron_Medium_38);
-  display.setCursor(15, 110);
-  display.print(tt);
-
-  // Weather Icon
-  display.setFont("bold 22px Meteocons");
-  //display.setFont(&Meteocons_Regular_22);
-  display.setCursor(152, 60);
-  //display.print(String(wIcon));
-  display.print(String(getWeatherIcon(wDesc)));
+  mainTimeDesign();
+  dateDesign();
+  weatherDesign();
+  humidityDesign();
 }
 
 function page7() {
@@ -647,4 +670,8 @@ function page8() {
   display.fillRect(tX, tY + tW * 1.25, tW, 4, color);
 }
 
-colorSwap();
+function page9() {
+    
+}
+
+//colorSwap();
