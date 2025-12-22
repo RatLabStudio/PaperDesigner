@@ -4,27 +4,57 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paper Designer | Rat Lab Studio</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="http://ratlabstudio.com/wp-content/uploads/2024/02/RatLabIcon.png">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="ribbon">
-        <button class="windowButton" style="background-color: var(--red);"></button>
-        <button class="windowButton" style="background-color: var(--yellow);"></button>
-        <button class="windowButton" style="background-color: var(--bluegreen);"></button>
+      <button class="windowButton" style="background-color: var(--red)"></button>
+      <button class="windowButton" style="background-color: var(--yellow)"></button>
+      <button class="windowButton" style="background-color: var(--bluegreen)"></button>
     </div>
     <div id="sidebar">
-        <br><br><br>
-        <h2 style="margin-bottom: 10px;"><a href="https://ratlabstudio.com" style="color: rgb(108, 224, 228);">Rat Lab
-                Studio</a></h2>
-        <br>
-        <h2 style="font-weight: normal;">Paper Designer</h2>
-        <br><br>
-        <button id="modeButton" onclick="togglePixelation()">Pixelation</h2>
+      <br /><br /><br /><br /><br />
+      <h2 style="margin-bottom: 10px"><a href="https://ratlabstudio.com" style="color: rgb(108, 224, 228)">Rat Lab Studio</a></h2>
+      <br />
+      <h2 style="font-weight: normal">Paper Designer</h2>
+      <br /><br />
+      <button id="modeButton" onclick="togglePixelation()">Pixelation</button>
+      <br><br>
+      <button id="colorModeButton" onclick="toggleColorMode()">Light Mode</button>
     </div>
+    <button id="sidebarButton" class="sidebarButton" onclick="toggleSidebar()">
+      <div class="buttonLine" style="top: 30%"></div>
+      <div class="buttonLine"></div>
+      <div class="buttonLine" style="top: 70%"></div>
+    </button>
     <div id="documentBody">
-        <canvas id="canvas" width="200" height="200"></canvas>
+      <div class="componentContainer">
+        <div class="faceplate">
+          <canvas id="canvas" width="200" height="200"></canvas>
+          <div class="speaker">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
+          <div class="floppyDrive">
+            <div class="gripTop"></div>
+            <div class="hole"></div>
+            <div class="gripBottom"></div>
+          </div>
+        </div>
+
+        <div class="buttonPanel">
+          <div class="sideButtonContainer">
+            <button class="sideButton" id="bootButton"></button>
+            <button class="sideButton" id="powerButton"></button>
+          </div>
+        </div>
+      </div>
     </div>
-    
+
     <script src="script.js"></script>
     <script src="ui.js"></script>
   </body>

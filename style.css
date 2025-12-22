@@ -17,6 +17,26 @@
   --H5fontSize: 26px;
 }
 
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 html,
 body {
   background-color: var(--backgroundColor);
@@ -95,9 +115,36 @@ button:active {
   margin: 0;
   background-color: var(--lighterBackground);
   padding: 0% 2% 0% 2%;
-  /*min-width: 175px;
-  max-width: 400px;*/
   z-index: 1;
+  padding-left: 5vh;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+}
+
+#sidebar.animate {
+  animation: slideIn 0.4s ease-out forwards;
+}
+
+.sidebarButton {
+  position: absolute;
+  top: 6vh;
+  left: 2vh;
+  width: 7vh;
+  aspect-ratio: 1;
+  z-index: 100;
+  border-color: var(--bluegreen);
+  backdrop-filter: blur(5px);
+}
+
+.buttonLine {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 0.5vh;
+  background-color: rgba(255, 255, 255, 0.75);
+  border: none;
+  border-radius: 1vh;
 }
 
 #documentBody {
@@ -108,7 +155,7 @@ button:active {
   height: 100%;
   margin: 0;
   text-align: center;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 
 .page {
@@ -118,47 +165,6 @@ button:active {
   width: 100%;
   height: 100%;
   margin: 0;
-}
-
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6 {
-  font-weight: bold;
-}
-
-/* # */
-.h1 {
-  font-size: var(--H1fontSize);
-  color: var(--blue);
-  text-decoration: underline;
-}
-
-/* ## */
-.h2 {
-  font-size: var(--H2fontSize);
-  color: var(--bluegreen);
-  text-decoration: underline;
-}
-
-/* ### */
-.h3 {
-  font-size: var(--H3fontSize);
-  color: var(--yellow);
-}
-
-canvas {
-  width: 50vh;
-  aspect-ratio: 1;
-  background-color: #dfdbd4;
-  border: solid 2px black;
-  border-radius: 1vh;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 input,
@@ -201,4 +207,132 @@ option {
 
 .toggle {
   min-width: 10vh;
+}
+
+.componentContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 50vh;
+  aspect-ratio: 1;
+}
+
+.faceplate {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  height: 50vh;
+  aspect-ratio: 0.66;
+  background-color: #e6c489;
+  border: none;
+  border-radius: 16px;
+}
+
+canvas {
+  width: 79%;
+  aspect-ratio: 1;
+  background-color: #dfdbd4;
+  border: inset 5px #816c47;
+  border-radius: 8px;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.speaker {
+  position: absolute;
+  bottom: 12%;
+  left: 9.5%;
+  width: 35.9%;
+  height: 13%;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 20% auto auto auto 20%;
+  gap: 7%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.line {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.floppyDrive {
+  position: absolute;
+  width: 27%;
+  height: 9%;
+  right: 11%;
+  bottom: 13.7%;
+}
+
+.hole {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 35%;
+  background-color: rgba(0, 0, 0, 0.9);
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.gripTop,
+.gripBottom {
+  position: absolute;
+  right: 0%;
+  height: 33%;
+  width: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.gripTop {
+  top: 0%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+}
+
+.gripBottom {
+  bottom: 0%;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+}
+
+.buttonPanel {
+  background-color: #e6c489;
+  width: 6vh;
+  height: 50%;
+  position: absolute;
+  top: 50%;
+  right: 3vh;
+  transform: translateY(-50%);
+  border-radius: 5px;
+}
+
+.sideButtonContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 60%;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: auto auto;
+  gap: 10%;
+}
+
+.sideButton {
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 100%;
+  aspect-ratio: 1;
+  border: solid 1px black;
+  border-radius: 5px;
 }

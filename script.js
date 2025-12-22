@@ -4,6 +4,9 @@ ctx.imageSmoothingEnabled = false;
 ctx.webkitImageSmoothingEnabled = false;
 ctx.letterSpacing = "1.75px";
 
+const bootButton = document.getElementById("bootButton");
+const powerButton = document.getElementById("powerButton");
+
 const GxEPD_WHITE = "#dfdbd4";
 const GxEPD_BLACK = "#000000";
 
@@ -30,7 +33,7 @@ class Display {
   }
 
   drawRect(x, y, width, height, color) {
-    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
     ctx.strokeRect(x, y, width, height);
   }
 
@@ -47,7 +50,7 @@ class Display {
   }
 
   drawCircle(x, y, radius, color) {
-    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 360, false);
     ctx.stroke();
@@ -106,9 +109,21 @@ class RTC {
   getYear() {
     return this.date.getFullYear();
   }
+
+  /*timerSet(source_clock, value, int_enable, int_pulse) {
+
+  }
+
+  checkTimerFlag() {
+
+  }*/
 }
 
 let rtc = new RTC();
+
+function millis() {
+  return Date.now();
+}
 
 let display = new Display();
 let tt, ampm;
@@ -160,10 +175,14 @@ DejaVu_Sans_Condensed.load()
     console.error("Error loading font:", error);
   });
 
+let page = 4;
+function drawCurrentPage() {
+  pages[page - 1]();
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  page6();
+  drawCurrentPage();
 }
 
 const BLACK = GxEPD_BLACK,
@@ -171,6 +190,16 @@ const BLACK = GxEPD_BLACK,
 
 function colorSwap() {
   if (color == BLACK) {
+    color = WHITE;
+    blankColor = BLACK;
+  } else {
+    color = BLACK;
+    blankColor = WHITE;
+  }
+}
+
+function enableDarkMode(val) {
+  if (val) {
     color = WHITE;
     blankColor = BLACK;
   } else {
@@ -225,106 +254,26 @@ function togglePixelation() {
 }
 document.togglePixelation = togglePixelation;
 
-function page1() {
-  //LINE BELOW TIME
-  display.fillRect(60, 137, 124, 5, color);
-  display.fillRect(10, 42, 3, 129, color);
+const colorModeButton = document.getElementById("colorModeButton");
+function toggleColorMode() {
+  if (colorModeButton.innerHTML == "Light Mode") {
+    colorModeButton.innerHTML = "Dark Mode";
+    enableDarkMode(true);
+  } else {
+    colorModeButton.innerHTML = "Light Mode";
+    enableDarkMode(false);
+  }
+}
+document.toggleColorMode = toggleColorMode;
 
-  // Time
+// Draws the basic desktop to be used for several pages
+function drawDesktop() {
+  // Color Setup
+  display.fillRect(0, 0, 200, 200, blankColor);
   display.setTextColor(color);
-  //display.setFont(&DSEG7_Classic_bold_36);
-  display.setFont("bold 36px DSEG7");
-  display.setCursor(18, 130);
-  display.print(tt);
 
-  // Battery
-  display.drawRect(150, 8, 40, 16, color);
-  display.drawRect(151, 9, 38, 14, color);
-  display.fillRect(190, 12, 3, 7, color);
-
-  for (let i = 0; i < voltageSegments; i++) display.fillRect(154 + i * 7, 12, 4, 8, color);
-
-  // Date
-  display.fillRoundRect(20, 48, 95, 35, 5, color);
-
-  //display.setFont(&DejaVu_Sans_Condensed_bold_15);
-  display.setFont("bold 15px DejaVu_Sans_Condensed");
-  display.setFont("bold 18px DejaVu_Sans_Condensed");
-  display.setCursor(25, 73);
-  display.print(dateString);
-
-  // Weekday
-  display.fillRoundRect(137, 63, 45, 22, 4, color);
-
-  display.setTextColor(blankColor);
-  display.setCursor(142, 80);
-  display.print(days[rtc.getWeekday()]);
-
-  //SENSR READINGS temperature symbol
-  display.fillRoundRect(35, 143, 15, 40, 8, color);
-  display.fillCircle(42, 173, 10, color);
-  display.fillRoundRect(37, 145, 11, 36, 8, blankColor);
-  display.fillCircle(42, 173, 8, blankColor);
-  display.fillRoundRect(40, 153, 5, 25, 2, color);
-  display.fillCircle(42, 173, 5, color);
-
-  //SENSR READINGS humidity symbol
-  for (let i = 0; i < 6; i++) display.fillCircle(122, 170 - i * 3, 6 - i, color);
-
-  display.setTextColor(color);
-  display.setCursor(60, 161);
-  display.setCursor(60, 177);
-  display.print(tmp);
-  display.setCursor(135, 161);
-  display.setCursor(135, 177);
-  display.print(hum2);
-}
-
-function page2() {
-  // Time
-  display.setFont("bold 12px DejaVu_Sans_Condensed");
-  display.setCursor(160, 14);
-  display.print(tt);
-
-  // Ribbon
-  display.setCursor(6, 14);
-  display.print("Rat Lab Studio");
-  display.fillRect(0, 20, 200, 1, color);
-
-  // Desktop File
-  display.drawRect(5, 28, 30, 18, color);
-  display.drawRect(5, 25, 12, 3, color);
-
-  // Window
-  display.fillRect(12, 35, 180, 155, color);
-  display.fillRect(10, 33, 180, 155, blankColor);
-  display.drawRect(10, 33, 180, 155, color);
-  display.fillRect(10, 48, 180, 1, color);
-  for (let i = 0; i < 3; i++) display.drawCircle(20 + 13 * i, 41, 4, color);
-
-  // Content
-  display.setCursor(30, 80);
-  display.print("Today is " + String(dateString) + ",");
-  display.setCursor(30, 100);
-  display.print("a " + String(days[rtc.getWeekday()]) + ".");
-
-  display.fillRoundRect(30, 112, 6, 20, 4, color);
-  display.fillCircle(33, 127, 5, color);
-  display.fillRoundRect(31, 113, 4, 18, 4, blankColor);
-  display.fillCircle(33, 127, 4, blankColor);
-  display.fillRoundRect(32, 117, 2, 13, 1, color);
-  display.fillCircle(33, 127, 3, color);
-
-  display.setCursor(45, 128);
-  display.print("It's " + String(tmp) + " degrees.");
-}
-
-function page3() {
-  // Time
   display.setFont("bold 12px DejaVu_Sans_Condensed");
   //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
-  display.setCursor(155, 14);
-  display.print(tt);
 
   // Ribbon
   display.setCursor(6, 14);
@@ -352,104 +301,127 @@ function page3() {
   display.drawCircle(33, 41, 4, color);
   display.drawCircle(46, 41, 4, color);
 
-  // Content
-  display.setCursor(20, 70);
-  display.print("To set up your device,");
-  display.setCursor(20, 90);
-  display.print("connect to the WiFi:");
-  display.setCursor(20, 110);
-  display.print("  RatLabESP");
-  display.setCursor(20, 175);
-  display.print("ratlabstudio.com/help");
+  otherTimeDesign();
 }
 
-function page4() {
-  // Time
-  display.setFont("bold 12px DejaVu_Sans_Condensed");
-  //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
-  display.setCursor(155, 14);
-  display.print(tt);
+let pages = [
+  function setupPage() {
+    drawDesktop();
 
-  // Ribbon
-  display.setCursor(6, 14);
-  display.print("Rat Lab Studio");
-  display.fillRect(0, 20, 200, 1, color);
+    // Content
+    display.setCursor(20, 70);
+    display.print("To set up your device,");
+    display.setCursor(20, 90);
+    display.print("connect to the WiFi:");
+    display.setCursor(20, 110);
+    display.print("  RatLabESP");
+    display.setCursor(20, 175);
+    display.print("ratlabstudio.com/help");
+  },
 
-  // Desktop File
-  display.drawRect(5, 28, 30, 18, color);
-  display.drawRect(5, 25, 12, 3, color);
+  function addressPage() {
+    drawDesktop();
 
-  // Desktop File 2
-  display.drawRect(5, 59, 30, 18, color);
-  display.drawRect(5, 56, 12, 3, color);
+    // Content
+    display.setCursor(20, 70);
+    display.print("Device Connected!");
+    display.setCursor(20, 90);
+    display.print("Go to the website:");
+    display.setCursor(20, 110);
+    display.print("  http://" + String("192.168.1.4"));
+    display.setCursor(20, 175);
+    display.print("ratlabstudio.com/help");
+  },
 
-  // Desktop File 3
-  display.drawRect(5, 90, 30, 18, color);
-  display.drawRect(5, 87, 12, 3, color);
+  function connectedPage() {
+    drawDesktop();
 
-  // Window
-  display.fillRect(12, 35, 180, 155, color);
-  display.fillRect(10, 33, 180, 155, blankColor);
-  display.drawRect(10, 33, 180, 155, color);
-  display.fillRect(10, 48, 180, 1, color);
-  display.drawCircle(20, 41, 4, color);
-  display.drawCircle(33, 41, 4, color);
-  display.drawCircle(46, 41, 4, color);
+    // Content
+    display.setCursor(20, 70);
+    display.print("Connection success!");
+    display.setCursor(20, 100);
+    display.print("Continue setup in ");
+    display.setCursor(22, 120);
+    display.print("browser.");
+    display.setCursor(20, 175);
+    display.print("ratlabstudio.com/help");
+  },
 
-  // Content
-  display.setCursor(20, 70);
-  display.print("Device Connected!");
-  display.setCursor(20, 90);
-  display.print("Go to the website:");
-  display.setCursor(20, 110);
-  display.print("  http://" + String("192.168.1.4"));
-  display.setCursor(20, 175);
-  display.print("ratlabstudio.com/help");
-}
+  function mainPage() {
+    // Color Setup
+    display.fillRect(0, 0, 200, 200, blankColor);
+    display.setTextColor(color);
 
-function page5() {
-  // Time
-  display.setFont("bold 12px DejaVu_Sans_Condensed");
-  //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
-  display.setCursor(155, 14);
-  display.print(tt);
+    // City Name
+    display.setTextColor(color);
+    display.setFont("bold 14px DejaVu_Sans_Condensed");
+    //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
+    display.setCursor(15, 25);
+    display.print(cityName);
 
-  // Ribbon
-  display.setCursor(6, 14);
-  display.print("Rat Lab Studio");
-  display.fillRect(0, 20, 200, 1, color);
+    // Region
+    display.fillRoundRect(155, 11, 30, 18, 2, color);
+    display.setTextColor(blankColor);
+    display.setCursor(161, 25);
+    display.print(region);
 
-  // Desktop File
-  display.drawRect(5, 28, 30, 18, color);
-  display.drawRect(5, 25, 12, 3, color);
+    // Humidity Lines
+    //display.fillRect(16, 160, 1, 30, color);
+    //display.fillRect(183, 160, 1, 30, color);
 
-  // Desktop File 2
-  display.drawRect(5, 59, 30, 18, color);
-  display.drawRect(5, 56, 12, 3, color);
+    // Time Lines
+    display.fillRect(15, 71, 170, 1, color);
+    display.fillRect(15, 120, 170, 1, color);
 
-  // Desktop File 3
-  display.drawRect(5, 90, 30, 18, color);
-  display.drawRect(5, 87, 12, 3, color);
+    mainTimeDesign();
+    dateDesign();
+    weatherDesign();
+    humidityDesign();
+  },
 
-  // Window
-  display.fillRect(12, 35, 180, 155, color);
-  display.fillRect(10, 33, 180, 155, blankColor);
-  display.drawRect(10, 33, 180, 155, color);
-  display.fillRect(10, 48, 180, 1, color);
-  display.drawCircle(20, 41, 4, color);
-  display.drawCircle(33, 41, 4, color);
-  display.drawCircle(46, 41, 4, color);
+  function settingsPage() {
+    drawDesktop();
 
-  // Content
-  display.setCursor(20, 70);
-  display.print("Connection success!");
-  display.setCursor(20, 100);
-  display.print("Continue setup in ");
-  display.setCursor(22, 120);
-  display.print("browser.");
-  display.setCursor(20, 175);
-  display.print("ratlabstudio.com/help");
-}
+    // Content
+    display.setCursor(20, 70);
+    display.print("To configure, go to");
+    display.setCursor(20, 100);
+    display.print("http://" + String("") + "");
+    display.setCursor(20, 130);
+    display.print("in your browser.");
+    display.setCursor(20, 175);
+    display.print("ratlabstudio.com/help");
+  },
+
+  function timerPage() {
+    drawDesktop();
+
+    let radius = 55;
+    let thickness = 5;
+    let x = 100,
+      y = 118;
+
+    for (let i = 0 - Math.floor(thickness / 2); i < 1; i++) display.drawCircle(x, y, radius - i, color);
+    for (let i = 1; i < Math.ceil(thickness / 2); i++) display.drawCircle(x, y, radius - i, color);
+
+    percent = getTimerProgress();
+    for (let i = 0; i < percent; i++) {
+      let cords = getCoordsFromPercentage(i + 2, radius);
+      display.fillCircle(x + cords.x, y + cords.y, thickness, blankColor);
+    }
+
+    display.drawCircle(x, y, radius - Math.ceil(thickness / 2), color);
+    display.drawCircle(x, y, radius + Math.floor(thickness / 2), color);
+    percent++;
+
+    // Time
+    display.setTextColor(color);
+    display.setFont("bold 24px DSEG7");
+    //display.setFont(&Orbitron_Medium_38);
+
+    drawCenteredText(getTimeRemainingString(), 100, 136);
+  },
+];
 
 function mainTimeDesign() {
   // Time
@@ -524,154 +496,102 @@ function humidityDesign() {
   display.print("I: " + String(hum2) + "%");
 }
 
-function page6() {
-  // Color Setup
-  display.fillRect(0, 0, 200, 200, blankColor);
-  display.setTextColor(color);
-
-  // City Name
-  display.setTextColor(color);
-  display.setFont("bold 14px DejaVu_Sans_Condensed");
-  //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
-  display.setCursor(15, 25);
-  display.print(cityName);
-
-  // Region
-  display.fillRoundRect(155, 11, 30, 18, 2, color);
-  display.setTextColor(blankColor);
-  display.setCursor(161, 25);
-  display.print(region);
-
-  // Humidity Lines
-  //display.fillRect(16, 160, 1, 30, color);
-  //display.fillRect(183, 160, 1, 30, color);
-
-  // Time Lines
-  display.fillRect(15, 71, 170, 1, color);
-  display.fillRect(15, 120, 170, 1, color);
-
-  mainTimeDesign();
-  dateDesign();
-  weatherDesign();
-  humidityDesign();
+function drawCenteredText(text, x, y) {
+  let metrics = ctx.measureText(text);
+  let w = metrics.width;
+  let h = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+  let left = Math.round((x * 2 - w) / 2);
+  let top = Math.round((y * 2 - h) / 2);
+  display.setCursor(left, top);
+  display.print(text);
 }
 
-function page7() {
-  display.fillRect(0, 0, 200, 200, blankColor);
+let percent = 0;
+let timerAmount = 60 * 1000;
+let startTime = 0;
 
-  // Time
-  display.setTextColor(color);
-  display.setFont("bold 12px DejaVu_Sans_Condensed");
-  //display.setFont(&DejaVu_Sans_Condensed_Bold_12);
-  display.setCursor(155, 14);
-  display.print(tt);
-
-  // Ribbon
-  display.setCursor(6, 14);
-  display.print("Rat Lab Studio");
-  display.fillRect(0, 20, 200, 1, color);
-
-  // Desktop File
-  display.drawRect(5, 28, 30, 18, color);
-  display.drawRect(5, 25, 12, 3, color);
-
-  // Desktop File 2
-  display.drawRect(5, 59, 30, 18, color);
-  display.drawRect(5, 56, 12, 3, color);
-
-  // Desktop File 3
-  display.drawRect(5, 90, 30, 18, color);
-  display.drawRect(5, 87, 12, 3, color);
-
-  // Window
-  display.fillRect(12, 35, 180, 155, color);
-  display.fillRect(10, 33, 180, 155, blankColor);
-  display.drawRect(10, 33, 180, 155, color);
-  display.fillRect(10, 48, 180, 1, color);
-  display.drawCircle(20, 41, 4, color);
-  display.drawCircle(33, 41, 4, color);
-  display.drawCircle(46, 41, 4, color);
-
-  // Content
-  display.setCursor(20, 70);
-  display.print("To configure, go to");
-  display.setCursor(20, 100);
-  display.print("http://" + String("") + "");
-  display.setCursor(20, 130);
-  display.print("in your browser.");
-  display.setCursor(20, 175);
-  display.print("ratlabstudio.com/help");
+function startTimer() {
+  startTime = millis();
+  percent = 0;
 }
 
-function page8() {
-  // Background
-  display.fillRect(0, 0, 200, 200, blankColor);
+function getTimeRemaining() {
+  let timeRemaining = timerAmount - (millis() - startTime);
+  if (timeRemaining < 0) timeRemaining = timerAmount;
+  return timeRemaining;
+}
 
-  // Date
-  display.setTextColor(color);
-  display.setFont("bold 14px DejaVu_Sans_Condensed");
-  //display.setFont(&DejaVu_Sans_Condensed_Bold_14);
-  display.setCursor(15, 25);
-  display.print(dateString);
+function getTimeRemainingString() {
+  let ms = getTimeRemaining();
+  const seconds = Math.floor((ms / 1000) % 60);
+  const minutes = Math.floor((ms / (1000 * 60)) % 60);
+  const hours = Math.floor(ms / (1000 * 60 * 60));
 
-  // Weekday
-  display.setCursor(90, 25);
-  display.print(days[rtc.getWeekday()]);
+  let parts = [];
 
-  // AM / PM
-  if (use12hr) {
-    display.fillRoundRect(155, 82, 30, 18, 2, color);
-    display.setTextColor(blankColor);
-    display.setCursor(159, 96);
-    display.print(ampm);
+  if (hours > 0) {
+    // If we have hours, we must show HH, MM, and SS
+    parts.push(String(hours).padStart(2, "0"));
+    parts.push(String(minutes).padStart(2, "0"));
+    //parts.push(String(seconds).padStart(2, "0"));
+  } else if (minutes > 0) {
+    // If no hours but we have minutes, show MM and SS
+    parts.push(String(minutes).padStart(2, "0"));
+    parts.push(String(seconds).padStart(2, "0"));
+  } else {
+    // Only seconds left
+    if (seconds > 0) parts.push(String(seconds).padStart(2, "0"));
+    else parts.push(String(seconds).padStart(1, "0"));
   }
 
-  // Temperature
-  display.setTextColor(color);
-  display.setCursor(15, 55);
-  if (useFahrenheit) display.print(String(wTemp) + "*F, " + String(wDesc));
-  else display.print(String(wTemp) + "*C, " + String(wDesc));
-
-  // Time Lines
-  display.fillRect(15, 71, 170, 1, color);
-  display.fillRect(15, 120, 170, 1, color);
-
-  // Time
-  display.setFont("bold 38px DSEG7");
-  //display.setFont(&Orbitron_Medium_38);
-  display.setCursor(15, 110);
-  display.print(tt);
-
-  // Weather Icon
-  display.setFont("bold 22px Meteocons");
-  //display.setFont(&Meteocons_Regular_22);
-  display.setCursor(152, 60);
-  //display.print(String(wIcon));
-  display.print(String(getWeatherIcon(wDesc)));
-
-  let tX = 85,
-    tY = 140,
-    tW = 30;
-
-  display.fillRect(tX, tY, tW, 4, color);
-  display.fillRect(tX, tY + 4, 1, 4, color);
-  display.fillRect(tX + tW - 1, tY + 4, 1, 4, color);
-
-  for (let i = 0; i < tW / 2.5; i++) {
-    display.fillRect(tX + i, tY + i + 8, 1, 1, color);
-    display.fillRect(tX - i + tW - 1, tY + i + 8, 1, 1, color);
-
-    display.fillRect(tX + i, tY + tW * 1.25 - i - 5, 1, 1, color);
-    display.fillRect(tX - i + tW - 1, tY + tW * 1.25 - i - 5, 1, 1, color);
-  }
-
-  display.fillRect(tX, tY + tW + 4, 1, 4, color);
-  display.fillRect(tX + tW - 1, tY + tW + 4, 1, 4, color);
-  display.fillRect(tX, tY + tW * 1.25, tW, 4, color);
+  return parts.join(":");
 }
 
-function page9() {
-    
+function getTimerProgress() {
+  if (startTime == 0) return 0;
+  return Math.round(((millis() - startTime) / timerAmount) * 100);
 }
 
-//colorSwap();
+function getCoordsFromPercentage(percentage, radius) {
+  const angleInRadians = (percentage / 100) * (2 * Math.PI) - Math.PI / 2;
+  const x = radius * Math.cos(angleInRadians);
+  const y = radius * Math.sin(angleInRadians);
+
+  return {
+    x: Number(x.toFixed(2)),
+    y: Number(y.toFixed(2)),
+  };
+}
+
+let bootPressTime = 0,
+  bootPressed = false,
+  longPressed = false;
+bootButton.addEventListener("mousedown", (e) => {
+  bootPressTime = Date.now();
+  bootPressed = true;
+});
+
+bootButton.addEventListener("mouseup", (e) => {
+  bootPressed = false;
+  if (!longPressed) bootShortPress();
+  longPressed = false;
+});
+
+function bootShortPress() {
+  if (page == 4) page = 5;
+  else if (page == 6) {
+    if (startTime == 0) startTimer();
+    else startTime = 0;
+  } else page = 4;
+}
+
+function bootLongPress() {
+  if (page != 6) page = 6;
+  else page = 4;
+  bootPressed = false;
+  longPressed = true;
+}
+
+setInterval(function () {
+  if (bootPressed && Date.now() > bootPressTime + 1000) bootLongPress();
+}, 10);
